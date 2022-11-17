@@ -3,7 +3,7 @@
 const queryString = require("query-string");
 const _ = require("lodash");
 
-const taskManager = require("./taskManager");
+const { saveTask } = require("./taskManager");
 
 const createResponse = (statusCode, message) => ({
   statusCode,
@@ -11,23 +11,17 @@ const createResponse = (statusCode, message) => ({
 })
 
 
-module.exports.hello = async (event, context, callback) => {
-  const response = {
-    statusCode: 200,
-    body: JSON.stringify(
-      {
+module.exports.hello = (event, context, callback) => {
+  callback(null, createResponse(200, {
         message: 'Test lambda',
         input: event,
-      },
-    ),
-  };
-  callback(null, response);
+      }));
 
   // Use this code if you don't use the http event with the LAMBDA-PROXY integration
   // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
 };
 
-module.exports.post = async (event, context, callback) => {
+module.exports.post = (event, context, callback) => {
   if (event.httpMethod === "POST") {
     const response = {
       statusCode: 200,
@@ -41,7 +35,7 @@ module.exports.post = async (event, context, callback) => {
   };
 };
 
-module.exports.createTask = async (event, context, callback) => {
+module.exports.createTask = (event, context, callback) => {
   const response = {
     statusCode: 200,
     body: JSON.stringify({
@@ -50,8 +44,6 @@ module.exports.createTask = async (event, context, callback) => {
     })
   }
   callback(null, response);
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
 };
 
 
@@ -65,20 +57,21 @@ const saveATask = (text, userId, userName, callback) => {
   console.log("taskTitle: ", taskTitle);
   console.log("dueDate: ", dueDate);
   console.log("taskDescription: ", taskDescription);
-  console.log("id name: ", userId + " " + userName);
+  console.log(`userId: ${userId} userName: ${userName}`);
 
-  taskManager.saveTask(taskTitle, taskDescription, dueDate, userId, userName).then(res => {
-    console.log(res);
-    callback(null, createResponse(200, "Save a task"));
+  saveTask(taskTitle, taskDescription, dueDate, userId, userName).then(res => {
+    console.log("response: ", res);
+    callback(null, createResponse(200, res));
   }).catch(err => {
     console.log(err);
     callback(null, createResponse(500, "Error on saving task"))
   })
 }
 
-module.exports.tasks = async (event, context, callback) => {
+module.exports.tasks = (event, context, callback) => {
   const { command, text, user_id: userId, user_name: userName } = queryString.parse(decodeURIComponent(event.body));
-  
+
+  console.log("command: ", command);
   if (command === "/new-task") {
     saveATask(text, userId, userName, callback);
   } else {

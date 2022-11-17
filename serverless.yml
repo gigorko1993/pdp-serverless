@@ -72,7 +72,7 @@ functions:
           path: hello
           method: post
   createTask:
-    handler: handler.createTask
+    handler: handler.tasks
     events:
       - http:
           path: task/new
