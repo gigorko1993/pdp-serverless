@@ -36,7 +36,7 @@ const getATask = (text, callback) => {
   findTaskById(text)
     .then(result => {
       console.log('result: ', { attachments: result });
-      callback(null, createResponse(200, result));
+      callback(null, createResponse(200, { attachments: result }));
     })
     .catch(error => {
       console.log(error);
