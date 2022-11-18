@@ -55,8 +55,8 @@ const getAllPendingTasks = callback => {
     });
 };
 
-module.export = {
+module.exports = {
     saveATask,
     getATask,
     getAllPendingTasks
-}
+};

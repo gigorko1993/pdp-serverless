@@ -55,7 +55,7 @@ const formatter = (task, i = null) => ({
   ],
 });
 
-module.exports.formatAttachment = tasksList => {
+const formatAttachment = tasksList => {
   console.log('task List inside formatAttachment: ', tasksList);
   const attachments = tasksList.map((task, i) => {
     return formatter(task, i);
@@ -65,10 +65,15 @@ module.exports.formatAttachment = tasksList => {
   return attachments;
 };
 
-module.exports.formatAttachmentSingleTask = task => {
+const formatAttachmentSingleTask = task => {
   console.log('task inside formatAttachment: ', task);
   const attachments = [formatter(task)];
 
   console.log('attachments: ', attachments);
   return attachments;
 };
+
+module.exports = {
+formatAttachment,
+formatAttachmentSingleTask
+}

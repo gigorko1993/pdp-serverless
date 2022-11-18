@@ -10,7 +10,7 @@ const {
   formatAttachmentSingleTask,
 } = require('./tasksFormatter');
 
-module.exports.saveTask = (
+const saveTask = (
   taskTitle,
   taskDescription,
   dueDate,
@@ -41,7 +41,7 @@ module.exports.saveTask = (
     .then(() => task.taskId);
 };
 
-module.exports.deleteTask = taskId => {
+const deleteTask = taskId => {
   const params = {
     TableName: process.env.TASK_DYNAMODB_TABLE,
     Key: {
@@ -52,7 +52,7 @@ module.exports.deleteTask = taskId => {
   return dynamo.delete(params).promise();
 };
 
-module.exports.findTaskById = taskId => {
+const findTaskById = taskId => {
   const params = {
     TableName: process.env.TASK_DYNAMODB_TABLE,
     Key: {
@@ -68,7 +68,7 @@ module.exports.findTaskById = taskId => {
     });
 };
 
-module.exports.getExpiringTasksIn24Hrs = () => {
+const getExpiringTasksIn24Hrs = () => {
   const today = Number(getTime(new Date()));
   const tomorrow = Number(getTime(new Date(addSeconds(new Date(), 86400)))); //24 hrs from now 24*60*60
 
@@ -94,3 +94,10 @@ module.exports.getExpiringTasksIn24Hrs = () => {
       return formatAttachment(Items);
     });
 };
+
+module.exports = {
+  saveTask,
+  deleteTask,
+  findTaskById,
+  getExpiringTasksIn24Hrs,
+}
