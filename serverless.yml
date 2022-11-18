@@ -27,26 +27,26 @@ useDotenv: true
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   profile: pdp-serverless
   region: eu-west-3
   environment: ${self:custom}
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
-# you can add statements to the Lambda function's IAM Role here
+  # you can overwrite defaults here
+  #  stage: dev
+  #  region: us-east-1
+  # you can add statements to the Lambda function's IAM Role here
   iam:
     role:
       statements:
-        - Effect: "Allow"
+        - Effect: 'Allow'
           Action:
-            - "dynamodb:Scan"
-            - "dynamodb:GetItem"
-            - "dynamodb:PutItem"
-            - "dynamodb:UpdateItem"
-            - "dynamodb:DeleteItem"
-          Resource: 
-             - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.TASK_DYNAMODB_TABLE}"
+            - 'dynamodb:Scan'
+            - 'dynamodb:GetItem'
+            - 'dynamodb:PutItem'
+            - 'dynamodb:UpdateItem'
+            - 'dynamodb:DeleteItem'
+          Resource:
+            - 'arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.TASK_DYNAMODB_TABLE}'
 # you can define service wide environment variables here
 #  environment:
 #    variable1: value1
@@ -75,8 +75,20 @@ functions:
     handler: handler.tasks
     events:
       - http:
-          path: task/new
+          path: task-new
           method: post
+      - http:
+          path: task-find
+          method: post
+      - http:
+          path: task-pending
+          method: post
+  slackPublisher:
+    handler: handler.slackPublisher
+    events:
+      - schedule:
+          rate: rate(1 minute)
+          enabled: false
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -119,20 +131,20 @@ functions:
 
 # you can add CloudFormation resource templates here
 resources:
- Resources:
-   taskTable:
-     Type: "AWS::DynamoDB::Table"
-     Properties:
-       TableName: ${self:custom.TASK_DYNAMODB_TABLE}
-       AttributeDefinitions:
-        - AttributeName: taskId
-          AttributeType: S
-       KeySchema:
-        - AttributeName: taskId
-          KeyType: HASH
-       ProvisionedThroughput:
-        WriteCapacityUnits: 1
-        ReadCapacityUnits: 1
+  Resources:
+    taskTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: ${self:custom.TASK_DYNAMODB_TABLE}
+        AttributeDefinitions:
+          - AttributeName: taskId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: taskId
+            KeyType: HASH
+        ProvisionedThroughput:
+          WriteCapacityUnits: 1
+          ReadCapacityUnits: 1
 #  Outputs:
 #     NewOutput:
 #       Description: "Description for the output"
