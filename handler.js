@@ -4,11 +4,8 @@ const queryString = require('query-string');
 
 const { slackPublish } = require('./services/slackPublisher');
 const { saveATask, getATask, getAllPendingTasks } = require('./services/tasks');
+const { createResponse } = require('./services/responseHandler');
 
-const createResponse = (statusCode, message) => ({
-  statusCode,
-  body: JSON.stringify(message),
-});
 
 module.exports.slackPublisher = (event, context, callback) => {
   console.log('slack publisher was called');
