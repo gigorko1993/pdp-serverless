@@ -42,7 +42,7 @@ const getATask = (text, callback) => {
 const getAllPendingTasks = callback => {
   getExpiringTasksIn24Hrs()
     .then(result => {
-      console.log(result);
+      console.log("pending tasks: ", result);
       callback(null, createResponse(200, { attachments: result }));
     })
     .catch(error => {

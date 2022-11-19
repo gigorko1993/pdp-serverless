@@ -64,9 +64,7 @@ const findTaskById = taskId => {
   return dynamo
     .get(params)
     .promise()
-    .then(({ Item }) => {
-      return formatAttachmentSingleTask(Item);
-    });
+    .then(({ Item }) => formatAttachmentSingleTask(Item));
 };
 
 const getExpiringTasksIn24Hrs = () => {
@@ -91,9 +89,9 @@ const getExpiringTasksIn24Hrs = () => {
   return dynamo
     .scan(params)
     .promise()
-    .then(({ Items }) => {
-      Items ? formatAttachment(Items) : emptyTaskList()
-    });
+    .then(({ Items }) => 
+      Items?.length ? formatAttachment(Items) : emptyTaskList()
+    );
 };
 
 const getPendingTasksForUser = userId => {
@@ -108,9 +106,9 @@ const getPendingTasksForUser = userId => {
     TableName: process.env.TASKS_DYNAMODB_TABLE
   };
 
-  return dynamo.scan(params).promise().then(tasksList => {
-    return tasksFormatter.formatAttachment(tasksList.Items);
-  });
+  return dynamo.scan(params).promise().then(tasksList => 
+    tasksFormatter.formatAttachment(tasksList.Items)
+  );
 };
 
 const saveTaskAndPostToSlack = (
@@ -137,9 +135,7 @@ const saveTaskAndPostToSlack = (
   return dynamo
     .put(params)
     .promise()
-    .then(() => {
-      return task.taskId;
-    });
+    .then(() => task.taskId);
 };
 
 module.exports = {

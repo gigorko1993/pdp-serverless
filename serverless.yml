@@ -63,19 +63,19 @@ functions:
     handler: handler.slackTask
     events:
       - http:
-          path: create-task
+          path: create/task
           method: post
   createTask:
     handler: handler.tasks
     events:
       - http:
-          path: task-new
+          path: task/new
           method: post
       - http:
-          path: task-find
+          path: task/find
           method: post
       - http:
-          path: task-pending
+          path: task/pending
           method: post
       - http:
           path: tasks/pending-user

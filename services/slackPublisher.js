@@ -1,16 +1,10 @@
 'use strict';
 
 const axios = require('axios');
-const _ = require('lodash');
 
 const { getExpiringTasksIn24Hrs, saveTaskAndPostToSlack } = require('./taskManager');
 const { createResponse } = require('./responseHandler');
-
-const SLACK_URL =
-  'https://hooks.slack.com/services/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';
-
-const SLACK_URL_TASK_MANAGER =
-  'https://hooks.slack.com/services/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';
+const { SLACK_URL, SLACK_URL_TASK_MANAGER } = require('../env')
 
 const sendMessageToSlack = ({taskId, taskTitle, dueDate, taskDescription}, url) => {
   console.log("Text in sendMessageToSlack: ", {taskId, taskTitle, dueDate, taskDescription});
@@ -25,9 +19,7 @@ const sendMessageToSlack = ({taskId, taskTitle, dueDate, taskDescription}, url) 
 };
 
 const slackPublish = () => {
-  return getExpiringTasksIn24Hrs().then(result => {
-    return sendMessageToSlack({ attachments: result }, SLACK_URL);
-  });
+  return getExpiringTasksIn24Hrs().then(result => sendMessageToSlack({ attachments: result }, SLACK_URL));
 };
 
 const slackPublishNewTask = (text, callback) => {

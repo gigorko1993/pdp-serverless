@@ -4,6 +4,9 @@ const { format } = require('date-fns');
 
 const formatter = (task) => ({
   blocks: [
+  	{
+			"type": "divider"
+		},
     {
       type: 'header',
       text: {
@@ -52,11 +55,17 @@ const formatter = (task) => ({
         },
       ],
     },
+    {
+			"type": "divider"
+		}
   ],
 });
 
-const emptyTaskList = () => ({
+const emptyTaskList = () => ([{
   blocks: [
+  	{
+			"type": "divider"
+		},
     {
       type: 'header',
       text: {
@@ -74,8 +83,11 @@ const emptyTaskList = () => ({
         },
       ],
     },
+    {
+			"type": "divider"
+		}
   ],
-});
+}]);
 
 const formatAttachment = tasksList => {
   console.log('task List inside formatAttachment: ', tasksList);
