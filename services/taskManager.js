@@ -8,6 +8,7 @@ const dynamo = new AWS.DynamoDB.DocumentClient();
 const {
   formatAttachment,
   formatAttachmentSingleTask,
+  emptyTaskList
 } = require('./tasksFormatter');
 
 const saveTask = (
@@ -91,7 +92,7 @@ const getExpiringTasksIn24Hrs = () => {
     .scan(params)
     .promise()
     .then(({ Items }) => {
-      return formatAttachment(Items);
+      Items ? formatAttachment(Items) : emptyTaskList()
     });
 };
 

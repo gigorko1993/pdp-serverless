@@ -10,8 +10,7 @@ const SLACK_URL =
   'https://hooks.slack.com/services/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';
 
 const SLACK_URL_TASK_MANAGER =
-  'https://hooks.slack.com/services/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';
-  
+  'https://hooks.slack.com/services/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';
 
 const sendMessageToSlack = ({taskId, taskTitle, dueDate, taskDescription}, url) => {
   console.log("Text in sendMessageToSlack: ", {taskId, taskTitle, dueDate, taskDescription});

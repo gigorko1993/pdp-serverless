@@ -2,13 +2,13 @@
 
 const { format } = require('date-fns');
 
-const formatter = (task, i = null) => ({
+const formatter = (task) => ({
   blocks: [
     {
       type: 'header',
       text: {
         type: 'plain_text',
-        text: `Task ${i === null ? "." : i + 1}`,
+        text: `Task`,
         emoji: true,
       },
     },
@@ -55,10 +55,32 @@ const formatter = (task, i = null) => ({
   ],
 });
 
+const emptyTaskList = () => ({
+  blocks: [
+    {
+      type: 'header',
+      text: {
+        type: 'plain_text',
+        text: `No pending tasks for today and tomorrow`,
+        emoji: true,
+      },
+    },
+    {
+      type: 'section',
+      fields: [
+        {
+          type: 'mrkdwn',
+          text: "run new-task slash command to create new task"
+        },
+      ],
+    },
+  ],
+});
+
 const formatAttachment = tasksList => {
   console.log('task List inside formatAttachment: ', tasksList);
-  const attachments = tasksList.map((task, i) => {
-    return formatter(task, i);
+  const attachments = tasksList.map((task) => {
+    return formatter(task);
   });
 
   console.log('attachments: ', attachments);
@@ -75,5 +97,6 @@ const formatAttachmentSingleTask = task => {
 
 module.exports = {
 formatAttachment,
-formatAttachmentSingleTask
+formatAttachmentSingleTask,
+emptyTaskList
 }
