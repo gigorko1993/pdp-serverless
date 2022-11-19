@@ -94,23 +94,6 @@ const getExpiringTasksIn24Hrs = () => {
     );
 };
 
-const getPendingTasksForUser = userId => {
-  const params = {
-    ExpressionAttributeNames: {
-      '#userId': 'userId'
-    },
-    ExpressionAttributeValues: {
-      ':userId': userId
-    },
-    FilterExpression: '#userId = :userId',
-    TableName: process.env.TASKS_DYNAMODB_TABLE
-  };
-
-  return dynamo.scan(params).promise().then(tasksList => 
-    tasksFormatter.formatAttachment(tasksList.Items)
-  );
-};
-
 const saveTaskAndPostToSlack = (
   taskTitle,
   taskDescription,
@@ -143,6 +126,5 @@ module.exports = {
   deleteTask,
   findTaskById,
   getExpiringTasksIn24Hrs,
-  getPendingTasksForUser,
   saveTaskAndPostToSlack
 }

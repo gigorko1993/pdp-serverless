@@ -3,7 +3,7 @@
 const queryString = require('query-string');
 
 const { slackPublish, slackPublishNewTask } = require('./services/slackPublisher');
-const { saveATask, getATask, getAllPendingTasks, getAllPendingTasksForUser, completeATask } = require('./services/tasks');
+const { saveATask, getATask, getAllPendingTasks, completeATask } = require('./services/tasks');
 const { createResponse } = require('./services/responseHandler');
 
 
@@ -46,9 +46,6 @@ module.exports.tasks = (event, context, callback) => {
 
   } else if (command === '/pending-tasks') {
     getAllPendingTasks(callback);
-
-  } else if (command === '/task-pending-user') {
-    getAllPendingTasksForUser(userId, callback);
 
   } else if (command === '/task-complete') {
     completeATask(text, callback);
