@@ -1,6 +1,6 @@
 'use strict';
-const { v4: uuidv4 } = require('uuid');
 const AWS = require('aws-sdk');
+const { v4: uuidv4 } = require('uuid');
 const { parse, getTime, addSeconds } = require('date-fns');
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
@@ -95,9 +95,57 @@ const getExpiringTasksIn24Hrs = () => {
     });
 };
 
+const getPendingTasksForUser = userId => {
+  const params = {
+    ExpressionAttributeNames: {
+      '#userId': 'userId'
+    },
+    ExpressionAttributeValues: {
+      ':userId': userId
+    },
+    FilterExpression: '#userId = :userId',
+    TableName: process.env.TASKS_DYNAMODB_TABLE
+  };
+
+  return dynamo.scan(params).promise().then(tasksList => {
+    return tasksFormatter.formatAttachment(tasksList.Items);
+  });
+};
+
+const saveTaskAndPostToSlack = (
+  taskTitle,
+  taskDescription,
+  dueDate,
+) => {
+  const date = getTime(
+    new Date(parse(dueDate, 'yyyy-MM-dd HH:mm', new Date())),
+  );
+
+  const task = {
+    taskId: uuidv4(),
+    taskTitle,
+    taskDescription,
+    dueDate: date,
+  };
+
+  const params = {
+    TableName: process.env.TASK_DYNAMODB_TABLE,
+    Item: task,
+  };
+
+  return dynamo
+    .put(params)
+    .promise()
+    .then(() => {
+      return task.taskId;
+    });
+};
+
 module.exports = {
   saveTask,
   deleteTask,
   findTaskById,
   getExpiringTasksIn24Hrs,
+  getPendingTasksForUser,
+  saveTaskAndPostToSlack
 }

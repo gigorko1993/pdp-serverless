@@ -4,22 +4,17 @@ const {
   saveTask,
   findTaskById,
   getExpiringTasksIn24Hrs,
+  getPendingTasksForUser,
+  deleteTask,
 } = require('./taskManager');
 const { createResponse } = require('./responseHandler');
 
 const saveATask = (text, userId, userName, callback) => {
-  const [taskTitle, dueDate] = text.split(',');
-//   const taskTitle = textArray[0];
-//   const dueDate = textArray[1];
+  const [taskTitle, dueDate, taskDescription] = text.split(',');
 
-  const taskDescription = _.tail(_.tail(textArray)).join();
-
-  console.log('taskTitle: ', taskTitle);
-  console.log('dueDate: ', dueDate);
-  console.log('taskDescription: ', taskDescription);
-  console.log(`userId: ${userId} userName: ${userName}`);
-
-  saveTask(taskTitle, taskDescription, dueDate, userId, userName)
+  console.log('taskTitle: ', taskTitle, 'dueDate: ', dueDate, 'taskDescription: ', taskDescription, `userId: ${userId} userName: ${userName}`);
+  
+  saveTask(taskTitle.trim(), taskDescription.trim(), dueDate, userId, userName)
     .then(res => {
       console.log('response: ', res);
       callback(null, createResponse(200, res));
@@ -56,8 +51,35 @@ const getAllPendingTasks = callback => {
     });
 };
 
+const getAllPendingTasksForUser = (userId, callback) => {
+  getPendingTasksForUser(userId)
+    .then(result => {
+      console.log(result);
+      callback(null, createResponse(200, { attachments: result }));
+    })
+    .catch(error => {
+      console.log(error);
+      callback(null, createResponse(500, 'Error getting all pending tasks for user'));
+    });
+}
+
+const completeATask = (text, callback) => {
+  const taskId = text;
+    deleteTask(taskId)
+    .then(result => {
+      console.log(result);
+      callback(null, createResponse(200, { text: `Task ${taskId} was completed` }));
+    })
+    .catch(error => {
+      console.log(error);
+      callback(null, createResponse(500, 'Error getting all pending tasks for user'));
+    });
+}
+
 module.exports = {
     saveATask,
     getATask,
-    getAllPendingTasks
+    getAllPendingTasks,
+    getAllPendingTasksForUser,
+    completeATask,
 };

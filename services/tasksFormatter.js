@@ -8,7 +8,7 @@ const formatter = (task, i = null) => ({
       type: 'header',
       text: {
         type: 'plain_text',
-        text: `Task ${i !== null && i + 1}`,
+        text: `Task ${i === null ? "." : i + 1}`,
         emoji: true,
       },
     },

@@ -2,8 +2,8 @@
 
 const queryString = require('query-string');
 
-const { slackPublish } = require('./services/slackPublisher');
-const { saveATask, getATask, getAllPendingTasks } = require('./services/tasks');
+const { slackPublish, slackPublishNewTask } = require('./services/slackPublisher');
+const { saveATask, getATask, getAllPendingTasks, getAllPendingTasksForUser, completeATask } = require('./services/tasks');
 const { createResponse } = require('./services/responseHandler');
 
 
@@ -13,41 +13,20 @@ module.exports.slackPublisher = (event, context, callback) => {
   callback(null, null);
 };
 
-module.exports.hello = (event, context, callback) => {
-  callback(
-    null,
-    createResponse(200, {
-      message: 'Test lambda',
-      input: event,
-    }),
-  );
-};
+module.exports.slackTask = (event, context, callback) => {
+  console.log("event.body: ", event.body);
+  const {text} = JSON.parse(event.body);
 
-module.exports.post = (event, context, callback) => {
-  if (event.httpMethod === 'POST') {
-    const response = {
-      statusCode: 200,
-      body: JSON.stringify({
-        body: event.body,
-      }),
-    };
-    callback(null, response);
+  if (event.httpMethod === "POST") {
+    slackPublishNewTask(text, callback);
+
   } else {
-    callback(null, createResponse(200, 'Something else'));
+    callback(
+      null,
+      createResponse(404, 'Error on task creation'),
+    );
   }
 };
-
-module.exports.createTask = (event, context, callback) => {
-  const response = {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: 'Task endpoint was called yeah',
-      input: event,
-    }),
-  };
-  callback(null, response);
-};
-
 
 module.exports.tasks = (event, context, callback) => {
   const {
@@ -68,6 +47,12 @@ module.exports.tasks = (event, context, callback) => {
   } else if (command === '/pending-tasks') {
     getAllPendingTasks(callback);
 
+  } else if (command === '/task-pending-user') {
+    getAllPendingTasksForUser(userId, callback);
+
+  } else if (command === '/task-complete') {
+    completeATask(text, callback);
+    
   } else {
     callback(
       null,
